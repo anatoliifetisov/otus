@@ -9,20 +9,32 @@ from parsers.markdown_parser import MarkdownParser
 from datetime import datetime as dt
 
 logger = logging.getLogger(__name__)
-domain = "github.com"
+
+# it has no permissions except default anyway, so I don't care if anyone uses it
 token = "0c260e54b80a9e0acaa995a41faf9b75ae7cf85c"
+
+domain = "github.com"
 raw_readme_template = "https://raw.githubusercontent.com/{}/{}/master/README.md"
 repo_info_call_template = "https://api.github.com/repos/{}/{}"
+
 base_url = raw_readme_template.format("bayandin", "awesome-awesomeness")
 headers = {"User-Agent": "awesomeness-scraper"}
 
 
 class AwesomeScrapper(object):
+    """
+    Parses links from awesome-awesomeness list on github and retrieves all awesome repos info.
+    """
     def __init__(self, skip_objects=None):
         self.skip_objects = skip_objects
         self.parser = MarkdownParser(None)
 
     def make_api_call(self, endpoint):
+        """
+        Performs  a GET request against an endpoint
+        :param endpoint: endpoint to GET
+        :return: True and response if successful, False and an empty string if not
+        """
         response = requests.get(endpoint + "?access_token={}".format(token), headers=headers)
         if response.ok:
             return True, response.text
@@ -39,6 +51,12 @@ class AwesomeScrapper(object):
             return False, ""
 
     def get_repo_info(self, user, repo_name):
+        """
+        Retrieves repository info
+        :param user: repository's owner
+        :param repo_name: repository's name
+        :return:
+        """
         return self.make_api_call(repo_info_call_template.format(user, repo_name))
 
     def scrap_process(self, storage):
