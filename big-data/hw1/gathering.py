@@ -5,27 +5,27 @@ import json
 import pandas as pd
 import datetime as dt
 
-from scrappers.awesome_awesomeness_scrapper import AwesomeScrapper
+from scrapers.awesome_awesomeness_scraper import AwesomeScraper
 from storages.file_storage import FileStorage
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SCRAPPED_FILE = 'scrapped_data.txt'
-TABLE_FORMAT_FILE = 'data.csv'
+SCRAPED_FILE = "scraped_data.txt"
+TABLE_FORMAT_FILE = "data.csv"
 
 
 def gather_process():
     logger.info("gather")
-    storage = FileStorage(SCRAPPED_FILE)
+    storage = FileStorage(SCRAPED_FILE)
 
-    scrapper = AwesomeScrapper()
+    scrapper = AwesomeScraper()
     scrapper.scrap_process(storage)
 
 
 def convert_data_to_table_format():
     logger.info("transform")
-    storage = FileStorage(SCRAPPED_FILE)
+    storage = FileStorage(SCRAPED_FILE)
 
     labels = ["topic", "user", "repository", "commits", "contributors", "stars", "forks", "subscribers", "issues",
               "updated"]
@@ -53,7 +53,7 @@ def convert_data_to_table_format():
 def stats_of_data():
     logger.info("stats")
 
-    df = pd.read_csv("data.csv", index_col=0,
+    df = pd.read_csv(TABLE_FORMAT_FILE, index_col=0,
                      converters={"updated": lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")})
 
     counts = df.groupby("topic").size()
@@ -81,9 +81,9 @@ def stats_of_data():
             return "no"
         direction = "positive" if corr > 0 else "negative"
         ratio = "slight" if abs(corr) < 0.5 else "strong"
-        return "{} {}".format(ratio, direction)
+        return "a {} {}".format(ratio, direction)
 
-    print("There is a {} correlation ({}) between number of contributors and commits"
+    print("There is {} correlation ({}) between number of contributors and commits"
           .format(humanize_corr(users_commits_corr), round(users_commits_corr, 2)))
 
     df["delta"] = dt.datetime.now() - df.updated
@@ -95,7 +95,7 @@ def stats_of_data():
     issues_per_topic = df[["topic", "issues"]].groupby("topic").sum().issues
     topic_with_most_issues = issues_per_topic.idxmax()
     max_issues = issues_per_topic.loc[topic_with_most_issues]
-    print("Topic \"{}\" has max number of open issues ({})".format(topic_with_most_issues, max_issues))
+    print("Topic \"{}\" has max number of open issues ({}) across its repos".format(topic_with_most_issues, max_issues))
 
 
 if __name__ == '__main__':

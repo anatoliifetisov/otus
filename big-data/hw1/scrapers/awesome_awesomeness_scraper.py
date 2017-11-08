@@ -21,10 +21,11 @@ base_url = raw_readme_template.format("bayandin", "awesome-awesomeness")
 headers = {"User-Agent": "awesomeness-scraper"}
 
 
-class AwesomeScrapper(object):
+class AwesomeScraper(object):
     """
     Parses links from awesome-awesomeness list on github and retrieves all awesome repos info.
     """
+
     def __init__(self, skip_objects=None):
         self.skip_objects = skip_objects
         self.parser = MarkdownParser(None)
@@ -44,7 +45,7 @@ class AwesomeScrapper(object):
             seconds_until_reset = (reset_time - dt.now()).seconds
             logger.warning("Oops, hourly limit is exhausted, going to sleep for {} seconds".format(seconds_until_reset))
             logger.info("And back to work")
-            time.sleep(seconds_until_reset + 10)
+            time.sleep(seconds_until_reset + 10)  # can't be too careful here
             return self.make_api_call(endpoint)
         else:
             logger.error("Error occurred, \"{}\" returned \"{}\"".format(endpoint, response.text))
