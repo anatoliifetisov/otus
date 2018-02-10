@@ -61,8 +61,8 @@ public class WordPairsDriver extends Configured implements Tool {
     private int RunPairsCount(Configuration conf, String[] otherArgs)
             throws IOException, ClassNotFoundException, InterruptedException {
 
-        if (otherArgs.length != 3) {
-            System.err.println("Please, specify exactly three parameters: 1 <in-file> <out-dir>");
+        if (otherArgs.length < 3) {
+            System.err.println("Please, specify at least three parameters: 1 <in-file>* <out-dir>");
             System.exit(4);
         }
 
@@ -88,7 +88,12 @@ public class WordPairsDriver extends Configured implements Tool {
         job.setOutputFormatClass(TextOutputFormat.class);
 
         FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
-        FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
+
+        for (Integer i = 1; i < otherArgs.length - 1; i++) {
+            MultipleInputs.addInputPath(job, new Path(otherArgs[i]), TextInputFormat.class, WordPairsCountMapper.class);
+        }
+
+        FileOutputFormat.setOutputPath(job, new Path(otherArgs[otherArgs.length - 1]));
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
