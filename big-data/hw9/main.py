@@ -55,11 +55,3 @@ def main(args):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    # import pandas as pd
-    # s = SqliteStorage()
-    # q = s.get_user(1)
-    # index = q["id"]
-    # del q["id"]
-    # w = pd.DataFrame(q, index=[index])
-
-    a = 1
