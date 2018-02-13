@@ -176,5 +176,5 @@ class TelegramBot(object):
             bot.send_message(chat_id=update.message.chat_id, text=answer)
             bot.send_message(chat_id=update.message.chat_id, text=self.PROMT)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             bot.send_message(chat_id=update.message.chat_id, text=self.ERROR)
