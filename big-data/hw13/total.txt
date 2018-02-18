@@ -1,1 +1,1 @@
-Total pairs: 	140315
+Total pairs: 	78288

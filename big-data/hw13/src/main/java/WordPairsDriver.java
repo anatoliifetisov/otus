@@ -66,8 +66,6 @@ public class WordPairsDriver extends Configured implements Tool {
             System.exit(4);
         }
 
-        conf.set("textinputformat.record.delimiter", ".");
-
         Job job = Job.getInstance(conf);
 
         job.setNumReduceTasks(3);
@@ -84,13 +82,10 @@ public class WordPairsDriver extends Configured implements Tool {
         job.setReducerClass(WordPairsCountReducer.class);
         job.setCombinerClass(WordPairsCountReducer.class);
 
-        job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
-
         for (Integer i = 1; i < otherArgs.length - 1; i++) {
-            MultipleInputs.addInputPath(job, new Path(otherArgs[i]), TextInputFormat.class, WordPairsCountMapper.class);
+            MultipleInputs.addInputPath(job, new Path(otherArgs[i]), SentenceInputFormat.class, WordPairsCountMapper.class);
         }
 
         FileOutputFormat.setOutputPath(job, new Path(otherArgs[otherArgs.length - 1]));
