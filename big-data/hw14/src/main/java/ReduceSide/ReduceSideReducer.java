@@ -38,6 +38,10 @@ public class ReduceSideReducer extends Reducer<Text, LongTextWritable, Text, Lon
             } else {
                 String curr = value.getText();
 
+                if (prev.equals(curr)) { // only happens if we have > 1 entry per file
+                    break;
+                }
+
                 outKey.set(key);
 
                 if (curr.equals(secondFileName)) {

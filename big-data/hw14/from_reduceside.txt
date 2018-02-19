@@ -9892,10 +9892,8 @@ other-external	Robert_Recorde	27
 other-search	List_of_2018_Indian_Premier_League_personnel_changes	27
 other-external	Automated_vacuum_collection	26
 other-internal	Cookie_(nickname)	26
-Ancient_Egyptian_concept_of_the_soul	????	24
 other-search	Jessica_Falkholt	24
 other-external	Jazz_from_Hell	23
-other-empty	????	22
 Main_Page	Carillion	21
 other-external	Blackbird_(violin)	18
 other-external	Martha_Hughes_Cannon	17

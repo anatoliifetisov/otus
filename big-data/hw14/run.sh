@@ -13,8 +13,8 @@ gzip -dkf ${arch1}
 curl -OJ -C - ${url2} && \
 gzip -dkf ${arch2} && \
 
-rm out_broadcast.txt
-rm out_reduceside.txt
+rm from_broadcast.txt
+rm from_reduceside.txt
 
 hdfs dfs -rm -r /hw14/input
 hdfs dfs -rm -r /hw14/top10k
