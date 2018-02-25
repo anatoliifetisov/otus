@@ -18,21 +18,21 @@ mvn compile && \
 mvn package && \
 
 # registers uploaded CSVs as external tables
-hive -f init_raw.hql && \
+hive -f scripts/init_raw.hql && \
 # registers ORC tables; users partitioned by age (derived from bdate) and clustered by id into 25 buckets, posts clustered by from_id into 25 buckets
-hive -f init_ods.hql && \
+hive -f scripts/init_ods.hql && \
 # registers ORC table containing aggregated data; aggregation performed by joining two previous tables and flattening posts by user into a single string
-hive -f init_ads.hql && \
+hive -f scripts/init_ads.hql && \
 # registeers two ORC tables; each one contains users who have sex/age filled and _any_ other not-NULL field 
-hive -f init_dm.hql && \
+hive -f scripts/init_dm.hql && \
 
-hive -e "SELECT * FROM raw.users LIMIT 10;" > raw.users.txt && \
-hive -e "SELECT * FROM raw.posts LIMIT 10;" > raw.posts.txt && \
+hive -e "SELECT * FROM raw.users LIMIT 10;" > dumps/raw.users.txt && \
+hive -e "SELECT * FROM raw.posts LIMIT 10;" > dumps/raw.posts.txt && \
 
-hive -e "SELECT * FROM ods.users LIMIT 10;" > ods.users.txt && \
-hive -e "SELECT * FROM ods.posts LIMIT 10;" > ods.posts.txt && \
+hive -e "SELECT * FROM ods.users LIMIT 10;" > dumps/ods.users.txt && \
+hive -e "SELECT * FROM ods.posts LIMIT 10;" > dumps/ods.posts.txt && \
 
-hive -e "SELECT * FROM ads.users_with_posts LIMIT 10;" > ads.users_with_posts.txt && \
+hive -e "SELECT * FROM ads.users_with_posts LIMIT 10;" > dumps/ads.users_with_posts.txt && \
 
-hive -e "SELECT * FROM dm.users_with_sex_and_data LIMIT 10;" > dm.users_with_sex_and_data.txt && \
-hive -e "SELECT * FROM dm.users_with_age_and_data LIMIT 10;" > dm.users_with_age_and_data.txt
+hive -e "SELECT * FROM dm.users_with_sex_and_data LIMIT 10;" > dumps/dm.users_with_sex_and_data.txt && \
+hive -e "SELECT * FROM dm.users_with_age_and_data LIMIT 10;" > dumps/dm.users_with_age_and_data.txt
