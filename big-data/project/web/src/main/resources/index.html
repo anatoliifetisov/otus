@@ -1,0 +1,41 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+
+<div class="tab">
+    <button id="default" class="tablinks" onclick="openTab(event, tabsEnum.stats)">Stats</button>
+    <button class="tablinks" onclick="openTab(event, tabsEnum.settings)">Settings</button>
+</div>
+
+<div id="stats" class="tabcontent">
+    <svg id="barplot" width="1000" height="700"></svg>
+</div>
+
+<div id="settings" class="tabcontent">
+    <input type="button" id="saveButton" value="Save" onclick="saveSettings()" /><br/><br/>
+    <table id="hashtagsTable" border="1">
+        <tr>
+            <td colspan="2">Hashtag</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>#</td>
+            <td><input size=80 type="text" id="hashtagBox" /></td>
+            <td><input type="button" id="deleteHashtag" value="Delete" onclick="deleteRow(this)" /></td>
+            <td><input type="button" id="addHashtag" value="Add new" onclick="insertRow()" /></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    document.getElementById("default").click();
+</script>
+</body>
+</html>
