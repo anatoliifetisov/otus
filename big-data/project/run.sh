@@ -16,9 +16,9 @@ echo "\n"
 export SBT_OPTS="-Xmx8192M -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M"
 
 sbt clean compile assembly &&\
-spark-submit --class otus.project.streaming.TwitterStreamer --driver-memory 2g streaming/target/scala-2.11/streaming-assembly-1.0.jar &&\
-spark-submit --class otus.project.analysis.PostsAnalyzer --driver-memory 8g analysis/target/scala-2.11/analysis-assembly-1.0.jar &&\
-spark-submit --class otus.project.aggregation.PostsAggregator --driver-memory 2g aggregation/target/scala-2.11/aggregation-assembly-1.0.jar &&\
+spark-submit --class otus.project.streaming.TwitterStreamer --driver-memory 2g streaming/target/scala-2.11/streaming-assembly-1.0.jar &\
+spark-submit --class otus.project.analysis.PostsAnalyzer --driver-memory 8g analysis/target/scala-2.11/analysis-assembly-1.0.jar &\
+spark-submit --class otus.project.aggregation.PostsAggregator --driver-memory 2g aggregation/target/scala-2.11/aggregation-assembly-1.0.jar &\
 java -jar web/target/scala-2.11/web-assembly-1.0.jar
 
 
