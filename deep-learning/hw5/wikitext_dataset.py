@@ -57,6 +57,14 @@ class Wikitext_2(data.Dataset):
     valid_raw = "wiki.valid.raw"
 
     def __init__(self, root, seq_len=1, train=False, test=False, valid=False, transform=None, target_transform=None, download=False):
+        def reshape(data):
+            x, y = data
+            assert len(x) == len(y)
+            lines = len(x) // self.seq_len
+            x = x.long().narrow(0, 0, lines * self.seq_len).view(self.seq_len, -1).t()
+            y = y.long().narrow(0, 0, lines * self.seq_len).view(self.seq_len, -1).t()
+            return x, y            
+        
         if sum([train, test, valid]) != 1:
             raise RuntimeError("train, test and valid flags are mutually exclusive, raise exactly one of them")        
         
@@ -82,43 +90,14 @@ class Wikitext_2(data.Dataset):
             self.inverse_vocabulary = pickle.load(f)
 
         if self.train:
-            train_data, train_labels = torch.load(join(self.root, self.processed_folder, self.training_file))
-            self.train_data, self.train_labels = train_data.long(), train_labels.long()
-            if self.seq_len > 1:
-                self.train_data = self.train_data.split(self.seq_len)
-                self.train_labels = self.train_labels.split(self.seq_len)
-                
-                if len(self.train_data[-1]) < self.seq_len:
-                    self.train_data = self.train_data[:-1]
-                    
-                if len(self.train_labels[-1]) < self.seq_len:
-                    self.train_labels = self.train_labels[:-1]
-            
+            loaded = torch.load(join(self.root, self.processed_folder, self.training_file))
+            self.train_data, self.train_labels = reshape(loaded)
         elif self.test:
-            test_data, test_labels = torch.load(join(self.root, self.processed_folder, self.test_file))
-            self.test_data, self.test_labels = test_data.long(), test_labels.long()
-            if self.seq_len > 1:
-                self.test_data = self.test_data.split(self.seq_len)
-                self.test_labels = self.test_labels.split(self.seq_len)
-                
-                if len(self.test_data[-1]) < self.seq_len:
-                    self.test_data = self.test_data[:-1]
-                    
-                if len(self.test_labels[-1]) < self.seq_len:
-                    self.test_labels = self.test_labels[:-1]
-                
+            loaded = torch.load(join(self.root, self.processed_folder, self.test_file))
+            self.test_data, self.test_labels = reshape(loaded)
         else:
-            valid_data, valid_labels = torch.load(join(self.root, self.processed_folder, self.valid_file))
-            self.valid_data, self.valid_labels = valid_data.long(), valid_labels.long()
-            if self.seq_len > 1:
-                self.valid_data = self.valid_data.split(self.seq_len)
-                self.valid_labels = self.valid_labels.split(self.seq_len)
-                
-                if len(self.valid_data[-1]) < self.seq_len:
-                    self.valid_data = self.valid_data[:-1]
-                    
-                if len(self.valid_labels[-1]) < self.seq_len:
-                    self.valid_labels = self.valid_labels[:-1]                
+            loaded = torch.load(join(self.root, self.processed_folder, self.valid_file))
+            self.valid_data, self.valid_labels = reshape(loaded)          
         
            
     def __getitem__(self, index):
@@ -184,22 +163,26 @@ class Wikitext_2(data.Dataset):
         for f in files:
             shutil.move(join(extracted, f), raw)
         rmdir(extracted)
-        
+         
         files = [join(raw, f) for f in files]
+#         files = ["./wikitext/train.txt", "./wikitext/test.txt", "./wikitext/valid.txt"]
         vocabulary = self._build_vocabulary(files)
         
         self.vocabulary = vocabulary
         self.inverse_vocabulary = {v:k for k,v in vocabulary.items()}
         
         train_x = self._encode(vocabulary, join(raw, self.training_raw))
+#         train_x = self._encode(vocabulary, "./wikitext/train.txt")
         train_y = train_x[1:]
         train_x = train_x[:-1]
         
         test_x = self._encode(vocabulary, join(raw, self.test_raw))
+#         test_x = self._encode(vocabulary, "./wikitext/test.txt")
         test_y = test_x[1:]
         test_x = test_x[:-1]
         
         valid_x = self._encode(vocabulary, join(raw, self.valid_raw))
+#         valid_x = self._encode(vocabulary, "./wikitext/valid.txt")
         valid_y = valid_x[1:]
         valid_x = valid_x[:-1]
         
